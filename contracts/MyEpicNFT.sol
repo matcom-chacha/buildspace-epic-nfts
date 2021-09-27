@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+//some utils functions for strings
+import "@openzeppelin/contracts/utils/Strings.sol";
 //import OpenZeppelin Contracts
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -13,9 +15,46 @@ contract MyEpicNFT is ERC721URIStorage{
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+    //SVG code. Keep this baseSvg variable and change the word to display 
+    string baseSvg = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='black' /><text x='50%' y='50%' class='base' dominant-baseline='middle' text-anchor='middle'>";
+
+    //arrays with random words to form the final NFT's phrase 
+    string[] firstWords = ["Super", "Wild", "Awesome", "Marvelous", "Crazy", "Amazing", "Curious", "Strange", "Brave", "Funky", "Fearful", "Adorable", "Silly", "Hillarious", "Friendly"];
+    string[] secondWords = ["Vanilla", "Chocolate", "Strawberry", "Neapolitan", "Pistachio", "Coffee", "Banana", "Toffee", "Peanut", "Lemon", "Mocha", "Peach", "Rainbow", "Mango", "Cheescake"];
+    string[] thirdWords = ["Giraffe", "Whale", "Alpaca", "Dog", "Kitty", "Shrimp", "Octopus", "Zebra", "Eagle", "Chameleon", "Ostrich", "Armadillo", "Owl", "Firefly", "Koala"];
+
     //we need to pass the name of our NFTs and it's symbol
     constructor() ERC721("SquareNFT", "Square") {
         console.log("Super dope NFT contract");
+    }
+
+    //function to "randomly" pick a word from each array
+    function pickRandomFirstWord(uint256 tokenId) public view returns(string memory){
+        //Seed the random generator
+        uint256 rand = random(string(abi.encodePacked("FIRST_WORD", Strings.toString(tokenId))));
+        //Squash the # between 0 and the length of the array to avoid going out of bounds
+        rand = rand % firstWords.length;
+        return firstWords[rand];
+    }
+
+    function pickRandomSecondWord(uint256 tokenId) public view returns(string memory){
+        //Seed the random generator
+        uint256 rand = random(string(abi.encodePacked("SECOND_WORD", Strings.toString(tokenId))));
+        //Squash the # between 0 and the length of the array to avoid going out of bounds
+        rand = rand % secondWords.length;
+        return secondWords[rand];
+    }
+
+    function pickRandomThirdWord(uint256 tokenId) public view returns(string memory){
+        //Seed the random generator
+        uint256 rand = random(string(abi.encodePacked("THIRD_WORD", Strings.toString(tokenId))));
+        //Squash the # between 0 and the length of the array to avoid going out of bounds
+        rand = rand % thirdWords.length;
+        return thirdWords[rand];
+    }
+
+    function random(string memory input) internal pure returns (uint256){
+        return uint256(keccak256(abi.encodePacked(input)));
     }
 
     //a function that allows users to get an nft
@@ -23,15 +62,28 @@ contract MyEpicNFT is ERC721URIStorage{
         //Get the current tokenId, this starts at 0
         uint256 newItemId = _tokenIds.current();
 
+        //Grab one word from each of the three arrays
+        string memory first = pickRandomFirstWord(newItemId);
+        string memory second = pickRandomSecondWord(newItemId);
+        string memory third = pickRandomThirdWord(newItemId);
+
+        //Concatenate all together and close the <text> and <svg> tags
+        string memory finalSvg = string(abi.encodePacked(baseSvg, first, second, third, "</text></svg>"));
+        console.log("\n-------------------");
+        console.log(finalSvg);
+        console.log("\n-------------------");
+
         //Actually mint the NFT to the sender using msg.sender
         _safeMint(msg.sender, newItemId);
 
         //Set the NFTs data that makes it valuable
         //Later this call will be modified to follow the standards(a json with specific properties)
-        _setTokenURI(newItemId, "data:application/json;base64,ewogICAgIm5hbWUiOiAiU3VwZXJDaGVlc3lHaXJhZmZlIiwKICAgICJkZXNjcmlwdGlvbiI6ICJBbiBORlQgZnJvbSB0aGUgaGlnaGx5IGFjY2xhaW1lZCBzcXVhcmUgY29sbGVjdGlvbiIsCiAgICAiaW1hZ2UiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhCeVpYTmxjblpsUVhOd1pXTjBVbUYwYVc4OUluaE5hVzVaVFdsdUlHMWxaWFFpSUhacFpYZENiM2c5SWpBZ01DQXpOVEFnTXpVd0lqNEtJQ0FnSUR4emRIbHNaVDR1WW1GelpTQjdJR1pwYkd3NklIZG9hWFJsT3lCbWIyNTBMV1poYldsc2VUb2djMlZ5YVdZN0lHWnZiblF0YzJsNlpUb2dNVFJ3ZURzZ2ZUd3ZjM1I1YkdVK0NpQWdJQ0E4Y21WamRDQjNhV1IwYUQwaU1UQXdKU0lnYUdWcFoyaDBQU0l4TURBbElpQm1hV3hzUFNKaWJHRmpheUlnTHo0S0lDQWdJRHgwWlhoMElIZzlJalV3SlNJZ2VUMGlOVEFsSWlCamJHRnpjejBpWW1GelpTSWdaRzl0YVc1aGJuUXRZbUZ6Wld4cGJtVTlJbTFwWkdSc1pTSWdkR1Y0ZEMxaGJtTm9iM0k5SW0xcFpHUnNaU0krVTNWd1pYSkRhR1ZsYzNsSGFYSmhabVpsUEM5MFpYaDBQZ284TDNOMlp6ND0iCn0=");
-        console.log("An NFT with id %s has been minted to %s", newItemId, msg.sender);
+        // _setTokenURI(newItemId, "data:application/json;base64,ewogICAgIm5hbWUiOiAiU3VwZXJDaGVlc3lHaXJhZmZlIiwKICAgICJkZXNjcmlwdGlvbiI6ICJBbiBORlQgZnJvbSB0aGUgaGlnaGx5IGFjY2xhaW1lZCBzcXVhcmUgY29sbGVjdGlvbiIsCiAgICAiaW1hZ2UiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhCeVpYTmxjblpsUVhOd1pXTjBVbUYwYVc4OUluaE5hVzVaVFdsdUlHMWxaWFFpSUhacFpYZENiM2c5SWpBZ01DQXpOVEFnTXpVd0lqNEtJQ0FnSUR4emRIbHNaVDR1WW1GelpTQjdJR1pwYkd3NklIZG9hWFJsT3lCbWIyNTBMV1poYldsc2VUb2djMlZ5YVdZN0lHWnZiblF0YzJsNlpUb2dNVFJ3ZURzZ2ZUd3ZjM1I1YkdVK0NpQWdJQ0E4Y21WamRDQjNhV1IwYUQwaU1UQXdKU0lnYUdWcFoyaDBQU0l4TURBbElpQm1hV3hzUFNKaWJHRmpheUlnTHo0S0lDQWdJRHgwWlhoMElIZzlJalV3SlNJZ2VUMGlOVEFsSWlCamJHRnpjejBpWW1GelpTSWdaRzl0YVc1aGJuUXRZbUZ6Wld4cGJtVTlJbTFwWkdSc1pTSWdkR1Y0ZEMxaGJtTm9iM0k5SW0xcFpHUnNaU0krVTNWd1pYSkRhR1ZsYzNsSGFYSmhabVpsUEM5MFpYaDBQZ284TDNOMlp6ND0iCn0=");        
+        // console.log("An NFT with id %s has been minted to %s", newItemId, msg.sender);
+        _setTokenURI(newItemId, "blah");
 
         //Increment the counter for when the next NFT is minted
         _tokenIds.increment();
+        console.log("An NFT with id %s has been minted to %s", newItemId, msg.sender);
     }
 }
