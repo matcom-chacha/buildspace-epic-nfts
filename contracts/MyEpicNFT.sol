@@ -28,7 +28,7 @@ contract MyEpicNFT is ERC721URIStorage{
 
         //Set the NFTs data that makes it valuable
         //Later this call will be modified to follow the standards(a json with specific properties)
-        _setTokenURI(newItemId, "blah");
+        _setTokenURI(newItemId, "https://jsonkeeper.com/b/6MPO");
 
         //Increment the counter for when the next NFT is minted
         _tokenIds.increment();
