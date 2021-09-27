@@ -4,9 +4,18 @@ const main = async () => {
     //create a local Ethereum network using hardhat
     const nftContact = await nftContractFactory.deploy();
     //wait until contract is officially minted
-    await nftContact.deployed();
+    await nftContract.deployed();
     //get the address of the deployed contract
     console.log("Contract deployed to:", nftContact.address);
+
+    let txn = await nftContract.makeAnEpicNFT();
+    //Wait for it to be minted
+    await txn.wait();
+
+    //Mint another NFT for fun
+    txn = await nftContract.makeAnEpicNFT();
+    //Wait for it to be minted
+    await txn.wait();
 };
 
 const runMain = async () => {
