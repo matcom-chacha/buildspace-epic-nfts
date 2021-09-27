@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 //import OpenZeppelin Contracts
-import "@openzeppelin/contracts/token/ECR721/extensions/ECR721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 //a hardhat goodie to debug smart contract by console logs
 import "hardhat/console.sol";
@@ -29,6 +29,7 @@ contract MyEpicNFT is ERC721URIStorage{
         //Set the NFTs data that makes it valuable
         //Later this call will be modified to follow the standards(a json with specific properties)
         _setTokenURI(newItemId, "https://jsonkeeper.com/b/6MPO");
+        console.log("An NFT with id %s has been minted to %s", newItemId, msg.sender);
 
         //Increment the counter for when the next NFT is minted
         _tokenIds.increment();
