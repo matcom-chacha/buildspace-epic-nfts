@@ -28,7 +28,7 @@ contract MyEpicNFT is ERC721URIStorage{
 
         //Set the NFTs data that makes it valuable
         //Later this call will be modified to follow the standards(a json with specific properties)
-        _setTokenURI(newItemId, "https://jsonkeeper.com/b/6MPO");
+        _setTokenURI(newItemId, "data:application/json;base64,ewogICAgIm5hbWUiOiAiU3VwZXJDaGVlc3lHaXJhZmZlIiwKICAgICJkZXNjcmlwdGlvbiI6ICJBbiBORlQgZnJvbSB0aGUgaGlnaGx5IGFjY2xhaW1lZCBzcXVhcmUgY29sbGVjdGlvbiIsCiAgICAiaW1hZ2UiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhCeVpYTmxjblpsUVhOd1pXTjBVbUYwYVc4OUluaE5hVzVaVFdsdUlHMWxaWFFpSUhacFpYZENiM2c5SWpBZ01DQXpOVEFnTXpVd0lqNEtJQ0FnSUR4emRIbHNaVDR1WW1GelpTQjdJR1pwYkd3NklIZG9hWFJsT3lCbWIyNTBMV1poYldsc2VUb2djMlZ5YVdZN0lHWnZiblF0YzJsNlpUb2dNVFJ3ZURzZ2ZUd3ZjM1I1YkdVK0NpQWdJQ0E4Y21WamRDQjNhV1IwYUQwaU1UQXdKU0lnYUdWcFoyaDBQU0l4TURBbElpQm1hV3hzUFNKaWJHRmpheUlnTHo0S0lDQWdJRHgwWlhoMElIZzlJalV3SlNJZ2VUMGlOVEFsSWlCamJHRnpjejBpWW1GelpTSWdaRzl0YVc1aGJuUXRZbUZ6Wld4cGJtVTlJbTFwWkdSc1pTSWdkR1Y0ZEMxaGJtTm9iM0k5SW0xcFpHUnNaU0krVTNWd1pYSkRhR1ZsYzNsSGFYSmhabVpsUEM5MFpYaDBQZ284TDNOMlp6ND0iCn0=");
         console.log("An NFT with id %s has been minted to %s", newItemId, msg.sender);
 
         //Increment the counter for when the next NFT is minted
