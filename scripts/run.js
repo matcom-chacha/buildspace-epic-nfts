@@ -16,6 +16,9 @@ const main = async () => {
     txn = await nftContract.makeAnEpicNFT();
     //Wait for it to be minted
     await txn.wait();
+
+    const [nftsMinted, limit] = await nftContract.getNumberOfMintedNFTs();
+    console.log("Minted %s out of %s NFTs", nftsMinted, limit);
 };
 
 const runMain = async () => {
